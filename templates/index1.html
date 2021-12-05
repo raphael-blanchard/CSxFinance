@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Homepage
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="4"></td>
+                <td><b>{{ TOTAL | usd }}</b></td>
+            </tr>
+        </tfoot>
+        <tbody>
+            {% for stock in STOCKS %}
+                <tr>
+                    <td>{{ stock["name_stock2"] }}</td>
+                    <td>{{ stock["company_name"] }}</td>
+                    <td>{{ stock["quantity"] }}</td>
+                    <td>{{ stock["current_price"] | usd }}</td>
+                    <td>{{ stock["total"] | usd }}</td>
+                </tr>
+            {% endfor %}
+
+            <tr>
+                <td>CASH</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ CASH | usd }}</td>
+            </tr>
+            <tr>
+                <form action="/" method="post">
+                    <div class="form-group">
+                        <select class="form-control" name="transaction">
+                            <option disabled selected value>Transaction</option>
+                                <option value = "buy">Buy</option>
+                                <option value = "sell">Sell</option>
+                        </select>
+                        <select class="form-control" name="symbol">
+                            <option disabled selected value>Symbol</option>
+                            {% for stock in STOCKS %}
+                                <option value = "{{ stock['name_stock2'] }}">{{ stock["name_stock2"] }}</option>
+                            {% endfor %}
+                        </select>
+                        <input autocomplete="off" class="form-control" min="1" name="shares" placeholder="Number of shares" type="number">
+                        <button class="btn btn-primary" type="confirm">Buy/Sell</button>
+                    </div>
+                </form>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+
+SELECT DISTINCT(UPPER(name_stock)) FROM stocks WHERE username_2 = "test2";
+SELECT id_2, name_stock, username_2, SUM(total), SUM(quantity) FROM stocks WHERE username_2 = "test2" GROUP BY name_stock;
+
+UPDATE stocks SET name_stock = UPPER(name_stock);
+
+SELECT * FROM stocks WHERE username_2 = "test2" GROUP BY name_stock, quantity;
+ALTER TABLE stocks ADD total FLOAT;
+UPDATE stocks SET total = quantity*PPS;
+
+  #len_s = len(stocks)
+    #only method is GET
+    #get the symbol of the stocks purchased by one person
+    #symbol = db.execute("SELECT DISTINCT(UPPER(name_stock)) FROM stocks WHERE username_2 = ?", user_id)
+    #
+    #quote = lookup(symbol)
+    #name = quote["name"]
+    #
+    #shares = db.execute("SELECT SUM(quantity) FROM stocks WHERE username_2 = ? GROUP BY UPPER(name_stock)", user_id)
+    #get the current price of a stock
+    #price = quote["price"]
+    #
+    #cash = db.execute("SELECT cash FROM users WHERE username = ?", user_id)
+    #total of the value in shares of a stock
+    #total = db.execute("SELECT SUM(total) FROM stocks WHERE username_2 = ? GROUP BY UPPER(name_stock)", user_id)
+    #TOTAL = db.execute("SELECT SUM(total) FROM stocks WHERE username_2 = ?", user_id)
+
+    #, Name=name)
+    #, Shares=shares, Price=price, Total=total)
+
+
+
+    #get the ROI of each stock
+    prices = db.execute("SELECT name_stock, AVG(PPS), real_price FROM stocks WHERE id_2 = ? GROUP BY name_stock", user_id)
+    difference1 = prices
+
+    difference2 = difference1
+    for i in range(0, len(difference2)):
+        difference2[i]["ROI"] = round((difference2[i]["real_price"] / difference2[i]["AVG(PPS)"] - 1) * 100, 4)
+
+    for i in range(0, len(difference2)):
+        db.execute("UPDATE stocks SET cash = ? WHERE name_stock=?", difference2[i]["ROI"], difference2[i]["name_stock"])

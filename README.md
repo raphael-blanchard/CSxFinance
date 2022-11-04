@@ -4,4 +4,9 @@ One of the project I did during the CS50 course. This trading platorm like websi
 
 
 1min demo showing the use of a couple features of the website.
-https://user-images.githubusercontent.com/86181145/199794967-0ad3e972-b70a-4705-9a72-53e2caa41263.mp4
+
+
+
+https://user-images.githubusercontent.com/86181145/199915816-94696ba9-5445-460b-a92b-a45029baf15e.mp4
+
+
